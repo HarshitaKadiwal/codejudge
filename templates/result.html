@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submission Result - CodeJudge</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Submission Result</h1>
+
+    <p><strong>User:</strong> {{ username }}</p>
+    <p><strong>Problem:</strong> {{ problem.title }}</p>
+
+    {% if verdict == 'Accepted' %}
+        <div class="verdict-box verdict-accepted">Verdict: {{ verdict }}</div>
+    {% elif verdict == 'Wrong Answer' %}
+        <div class="verdict-box verdict-wa">Verdict: {{ verdict }}</div>
+    {% else %}
+        <div class="verdict-box verdict-other">Verdict: {{ verdict }}</div>
+    {% endif %}
+
+    <p><strong>Passed Test Cases:</strong> {{ passed_count }} / {{ total_count }}</p>
+
+    {% if failed_case %}
+        <h2>Failed Test Case #{{ failed_case }}</h2>
+
+        <div class="problem-box">
+            <h3>Input</h3>
+            <pre>{{ input_data }}</pre>
+        </div>
+
+        <div class="problem-box">
+            <h3>Your Output / Error</h3>
+            <pre>{{ actual_output }}</pre>
+        </div>
+
+        <div class="problem-box">
+            <h3>Expected Output</h3>
+            <pre>{{ expected_output }}</pre>
+        </div>
+    {% endif %}
+
+   <div class="buttons">
+    <a href="/problem/{{ problem.id }}">Try Again</a>
+    <a href="/problems">Back to Problems</a>
+    <a href="/submissions">My Submissions</a>
+</div>
+</div>
+
+</body>
+</html>

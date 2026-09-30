@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeJudge</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+</head>
+<body>
+    <div class="container">
+        <h1 class="hero-title">CodeJudge</h1>
+        <p class="hero-subtitle">
+            A mini online coding platform inspired by modern coding judges.
+            Practice problems, submit Python solutions, and get instant verdicts with a clean DevOps-ready workflow.
+        </p>
+
+        <div class="buttons">
+        
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+            <a href="/problems">Explore Problems</a>
+        </div>
+
+        <div class="card-grid">
+            <div class="feature-card">
+                <h3>Problem Solving</h3>
+                <p>Solve curated coding questions with sample input/output and multiple test cases.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Instant Verdicts</h3>
+                <p>Get Accepted, Wrong Answer, Runtime Error, or Time Limit Exceeded instantly.</p>
+            </div>
+            <div class="feature-card">
+                <h3>DevOps Focus</h3>
+                <p>Built to showcase Git, Docker, Jenkins, CI/CD workflow, and application deployment concepts.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,308 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background:
+        radial-gradient(circle at top left, rgba(0, 170, 255, 0.18), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(140, 82, 255, 0.18), transparent 30%),
+        linear-gradient(135deg, #0b1020, #111827, #0f172a);
+    color: #e5e7eb;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* subtle coding pattern */
+body::before {
+    content: "</>  { }  ()  ;  print()  if  else  def  class  SQL  Docker  Git  Jenkins";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: rgba(255, 255, 255, 0.03);
+    font-size: 28px;
+    line-height: 2.2;
+    white-space: pre-wrap;
+    z-index: 0;
+    pointer-events: none;
+    padding: 40px;
+}
+
+.container {
+    width: 90%;
+    max-width: 950px;
+    margin: 60px auto;
+    background: rgba(17, 24, 39, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 22px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    position: relative;
+    z-index: 1;
+}
+
+h1, h2, h3 {
+    color: #f9fafb;
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+p {
+    color: #cbd5e1;
+    margin-bottom: 16px;
+    line-height: 1.7;
+    text-align: center;
+}
+
+strong {
+    color: #ffffff;
+}
+
+.buttons {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.buttons a,
+button,
+.action-link {
+    display: inline-block;
+    margin: 10px 8px;
+    padding: 12px 22px;
+    border-radius: 10px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: white;
+    transition: all 0.25s ease;
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
+}
+
+.buttons a:hover,
+button:hover,
+.action-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(124, 58, 237, 0.35);
+}
+
+input,
+textarea {
+    width: 90%;
+    max-width: 700px;
+    padding: 14px 16px;
+    margin: 12px auto;
+    display: block;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(15, 23, 42, 0.88);
+    color: #f8fafc;
+    font-size: 15px;
+    outline: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #94a3b8;
+}
+
+input:focus,
+textarea:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+}
+
+textarea {
+    min-height: 220px;
+    resize: vertical;
+    font-family: Consolas, Monaco, monospace;
+    line-height: 1.5;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+    overflow: hidden;
+    border-radius: 16px;
+    background: rgba(15, 23, 42, 0.75);
+}
+
+th, td {
+    padding: 16px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+th {
+    background: rgba(37, 99, 235, 0.2);
+    color: #f8fafc;
+}
+
+td {
+    color: #dbeafe;
+}
+
+tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+pre {
+    background: rgba(15, 23, 42, 0.95);
+    color: #e2e8f0;
+    padding: 18px;
+    border-radius: 14px;
+    overflow-x: auto;
+    margin: 14px 0 24px 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 30px 0;
+}
+
+.message {
+    width: 90%;
+    margin: 15px auto 20px auto;
+    padding: 14px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.message.success {
+    background: rgba(34, 197, 94, 0.15);
+    color: #86efac;
+    border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
+.message.error {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    background: linear-gradient(90deg, #60a5fa, #a78bfa, #22d3ee);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+    max-width: 720px;
+    margin: 0 auto 24px auto;
+    font-size: 1.05rem;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    margin-top: 28px;
+}
+
+.feature-card {
+    background: rgba(15, 23, 42, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 20px;
+    text-align: left;
+}
+
+.feature-card h3 {
+    text-align: left;
+    margin-bottom: 10px;
+    color: #93c5fd;
+}
+
+.feature-card p {
+    text-align: left;
+    margin-bottom: 0;
+    font-size: 0.95rem;
+}
+
+.verdict-box {
+    padding: 18px;
+    border-radius: 14px;
+    margin: 20px auto;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.verdict-accepted {
+    background: rgba(34, 197, 94, 0.16);
+    color: #86efac;
+    border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
+.verdict-wa {
+    background: rgba(239, 68, 68, 0.16);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.verdict-other {
+    background: rgba(245, 158, 11, 0.16);
+    color: #fcd34d;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.nav-links {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.nav-links a {
+    color: #93c5fd;
+    text-decoration: none;
+    margin: 0 10px;
+    font-weight: 600;
+}
+
+.nav-links a:hover {
+    color: #c4b5fd;
+}
+
+.problem-box {
+    background: rgba(15, 23, 42, 0.7);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.center {
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 25px 18px;
+        margin: 25px auto;
+    }
+
+    .hero-title {
+        font-size: 2.2rem;
+    }
+
+    table, thead, tbody, th, td, tr {
+        font-size: 14px;
+    }
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Submissions - CodeJudge</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h1>My Submissions</h1>
+    <p>Welcome, <strong>{{ username }}</strong>. Here is your submission history.</p>
+
+    {% if submissions %}
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Problem</th>
+                <th>Verdict</th>
+                <th>Submitted At</th>
+            </tr>
+
+            {% for submission in submissions %}
+            <tr>
+                <td>{{ submission.id }}</td>
+                <td>{{ submission.problem_title }}</td>
+                <td>{{ submission.verdict }}</td>
+                <td>{{ submission.submitted_at }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No submissions found yet.</p>
+    {% endif %}
+
+    <div class="buttons">
+        <a href="/problems">Back to Problems</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+</body>
+</html>

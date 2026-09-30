@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problems - CodeJudge</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h1>Problem Set</h1>
+    <p>Welcome, <strong>{{ username }}</strong>. Choose a problem and start coding.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="message {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="buttons">
+        <a href="/logout">Logout</a>
+    </div>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Problem Title</th>
+            <th>Action</th>
+        </tr>
+
+        {% for problem in problems %}
+        <tr>
+            <td>{{ problem.id }}</td>
+            <td>{{ problem.title }}</td>
+            <td>
+                <a class="action-link" href="/problem/{{ problem.id }}">Solve</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>

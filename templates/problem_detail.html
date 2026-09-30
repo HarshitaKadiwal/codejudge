@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ problem.title }} - CodeJudge</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+    
+</head>
+<body>
+
+<div class="container">
+    <h1>{{ problem.title }}</h1>
+    <p>Solve the problem and submit your Python solution below.</p>
+
+    <div class="problem-box">
+        <h3>Description</h3>
+        <p style="text-align:left;">{{ problem.description }}</p>
+    </div>
+
+    <div class="problem-box">
+        <h3>Sample Input</h3>
+        <pre>{{ problem.sample_input }}</pre>
+    </div>
+
+    <div class="problem-box">
+        <h3>Sample Output</h3>
+        <pre>{{ problem.sample_output }}</pre>
+    </div>
+
+    <hr>
+
+    <h2>Submit Your Code</h2>
+
+    <form method="POST" action="/submit/{{ problem.id }}">
+        <textarea name="code" placeholder="Write your Python code here..." required></textarea>
+        <button type="submit">Submit Code</button>
+    </form>
+
+    <div class="nav-links">
+        <a href="/problems">Back to Problems</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+</body>
+</html>
