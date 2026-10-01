@@ -1,0 +1,14 @@
+__pycache__/
+.pytest_cache/
+.venv/
+venv/
+env/
+*.pyc
+.env
+.DS_Store
+.vscode/
+.idea/
+docker-compose.override.yml
+build/
+dist/
+*.egg-info/

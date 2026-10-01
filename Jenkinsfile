@@ -1,36 +1,53 @@
 pipeline {
     agent any
 
-    stages {
+    environment {
+        IMAGE_NAME = 'codejudge-app'
+        BUILD_TAG = "${env.BUILD_NUMBER ?: 'local'}"
+        FULL_TAG = "${IMAGE_NAME}:${BUILD_TAG}"
+    }
 
-        stage('Clone Repo') {
+    stages {
+        stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/HarshitaKadiwal/codejudge.git'
+                checkout scm
             }
         }
 
         stage('Install Dependencies') {
             steps {
+                sh 'python -m pip install --upgrade pip'
                 sh 'pip install -r requirements.txt'
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'pytest'
+                sh 'pytest -q'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t codejudge-app .'
+                sh "docker build -t ${FULL_TAG} ."
+                sh "docker tag ${FULL_TAG} ${IMAGE_NAME}:latest || true"
             }
         }
 
-        stage('Run Container') {
+        stage('Run Container & Health Check') {
             steps {
-                sh 'docker run -d -p 5000:5000 codejudge-app'
+                sh 'docker rm -f codejudge_temp || true'
+                sh "docker run -d --name codejudge_temp -p 5000:5000 ${FULL_TAG}"
+                sh 'sleep 3'
+                sh "curl --fail http://localhost:5000/health"
+                sh 'docker rm -f codejudge_temp'
             }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker images | head -n 20'
         }
     }
 }

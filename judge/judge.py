@@ -1,13 +1,20 @@
 import subprocess
 import os
 import uuid
+import textwrap
+
 
 def run_python_code(code, input_data):
+    """Run untrusted Python code in a temporary file and return output.
+
+    WARNING: This is not fully secure. See README for security considerations.
+    """
     temp_filename = f"temp_{uuid.uuid4().hex}.py"
 
     try:
+        safe_code = textwrap.dedent(code)
         with open(temp_filename, "w", encoding="utf-8") as f:
-            f.write(code)
+            f.write(safe_code)
 
         result = subprocess.run(
             ["python", temp_filename],
@@ -30,7 +37,10 @@ def run_python_code(code, input_data):
 
     finally:
         if os.path.exists(temp_filename):
-            os.remove(temp_filename)
+            try:
+                os.remove(temp_filename)
+            except Exception:
+                pass
 
 
 def evaluate_python_code_multiple(code, test_cases):

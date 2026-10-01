@@ -1,9 +1,21 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from database.db import get_connection
 from judge.judge import evaluate_python_code_multiple
+import logging
+import os
+from dotenv import load_dotenv
+import bcrypt
+
 
 app = Flask(__name__)
-app.secret_key = 'codejudge_secret_key'
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'change-me')
+
+# Load environment variables from .env if present
+load_dotenv()
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
+logger = logging.getLogger(__name__)
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -23,9 +35,11 @@ def register():
         cursor = conn.cursor()
 
         try:
+            # Hash password before storing
+            hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
             cursor.execute(
                 "INSERT INTO users (username, password) VALUES (%s, %s)",
-                (username, password)
+                (username, hashed.decode('utf-8'))
             )
             conn.commit()
             flash('User registered successfully! Please log in.', 'success')
@@ -52,8 +66,8 @@ def login():
         cursor = conn.cursor(dictionary=True)
 
         cursor.execute(
-            "SELECT * FROM users WHERE username=%s AND password=%s",
-            (username, password)
+            "SELECT * FROM users WHERE username=%s",
+            (username,)
         )
 
         user = cursor.fetchone()
@@ -61,11 +75,14 @@ def login():
         cursor.close()
         conn.close()
 
-        if user:
+        # Verify hashed password
+        if user and bcrypt.checkpw(password.encode('utf-8'), user.get('password').encode('utf-8')):
             session['username'] = username
+            logger.info('User %s logged in', username)
             flash(f'Welcome, {username}!', 'success')
             return redirect(url_for('problems'))
         else:
+            logger.warning('Failed login attempt for %s', username)
             flash('Invalid credentials!', 'error')
             return redirect(url_for('login'))
 
