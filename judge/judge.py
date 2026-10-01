@@ -2,7 +2,7 @@ import subprocess
 import os
 import uuid
 import textwrap
-
+import sys
 
 def run_python_code(code, input_data):
     """Run untrusted Python code in a temporary file and return output.
@@ -17,7 +17,7 @@ def run_python_code(code, input_data):
             f.write(safe_code)
 
         result = subprocess.run(
-            ["python", temp_filename],
+          [sys.executable, temp_filename],
             input=input_data,
             text=True,
             capture_output=True,
