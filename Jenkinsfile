@@ -36,14 +36,14 @@ pipeline {
         }
 
         stage('Run Container & Health Check') {
-            steps {
-                sh 'docker rm -f codejudge_temp || true'
-                sh "docker run -d --name codejudge_temp -p 5001:5000 ${FULL_TAG}"
-                sh 'sleep 3'
-                sh "curl --fail http://localhost:5001/health"
-                sh 'docker rm -f codejudge_temp'
-            }
-        }
+    steps {
+        sh 'docker rm -f codejudge_temp || true'
+        sh "docker run -d --name codejudge_temp -p 5001:5000 ${FULL_TAG}"
+        sh 'sleep 3'
+        sh "docker exec codejudge_temp python -c \"import urllib.request; print(urllib.request.urlopen('http://127.0.0.1:5000/health').read().decode())\""
+        sh 'docker rm -f codejudge_temp'
+    }
+}
     }
 
     post {
