@@ -34,7 +34,7 @@
     <h2>Submit Your Code</h2>
 
     <form method="POST" action="/submit/{{ problem.id }}">
-        <textarea name="code" placeholder="Write your Python code here..." required></textarea>
+        <textarea name="code" placeholder="Write your Python code here..." maxlength="100000" required></textarea>
         <button type="submit">Submit Code</button>
     </form>
 

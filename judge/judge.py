@@ -3,6 +3,9 @@ import os
 import uuid
 import textwrap
 import sys
+import logging
+
+logger = logging.getLogger(__name__)
 
 def run_python_code(code, input_data):
     """Run untrusted Python code in a temporary file and return output.
@@ -16,24 +19,34 @@ def run_python_code(code, input_data):
         with open(temp_filename, "w", encoding="utf-8") as f:
             f.write(safe_code)
 
+        execution_environment = {
+            "PATH": os.environ.get("PATH", os.defpath),
+            "PYTHONIOENCODING": "utf-8",
+        }
+        for name in ("SYSTEMROOT", "WINDIR", "TEMP", "TMP"):
+            if name in os.environ:
+                execution_environment[name] = os.environ[name]
+
         result = subprocess.run(
-          [sys.executable, temp_filename],
+            [sys.executable, temp_filename],
             input=input_data,
             text=True,
             capture_output=True,
-            timeout=5
+            timeout=5,
+            env=execution_environment,
         )
 
         if result.returncode != 0:
-            return False, "Runtime Error", result.stderr.strip()
+            return False, "Runtime Error", "Program exited with a runtime error."
 
         return True, "Success", result.stdout.strip()
 
     except subprocess.TimeoutExpired:
         return False, "Time Limit Exceeded", "Code took too long to execute."
 
-    except Exception as e:
-        return False, "Error", str(e)
+    except Exception:
+        logger.exception("Could not execute a submitted program.")
+        return False, "Error", "Submission could not be executed."
 
     finally:
         if os.path.exists(temp_filename):

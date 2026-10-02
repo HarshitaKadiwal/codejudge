@@ -1,28 +1,29 @@
-# Docker config
 FROM python:3.11-slim
 
 WORKDIR /app
 
-ARG USER=appuser
+ENV PYTHONDONTWRITEBYTECODE=1 \
+	PYTHONUNBUFFERED=1
 
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+COPY requirements.txt ./
 
-COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt \
+	&& groupadd --system app \
+	&& useradd --system --gid app --home-dir /app --shell /usr/sbin/nologin app
 
-RUN pip install --no-cache-dir -r requirements.txt
+COPY app.py ./
+COPY database/ ./database/
+COPY judge/ ./judge/
+COPY templates/ ./templates/
+COPY static/ ./static/
 
-COPY . .
+RUN chown -R app:app /app
 
-# Create non-root user
-RUN adduser --disabled-password --gecos "" --home /home/${USER} ${USER} || true
-RUN chown -R ${USER}:${USER} /app
-
-USER ${USER}
+USER app
 
 EXPOSE 5000
 
-HEALTHCHECK --interval=10s --timeout=5s --retries=3 \
-	CMD curl -f http://localhost:5000/health || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+	CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health', timeout=3)"
 
 CMD ["python", "app.py"]

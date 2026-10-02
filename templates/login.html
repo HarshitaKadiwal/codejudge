@@ -20,8 +20,8 @@
         {% endwith %}
 
         <form method="POST" action="/login">
-            <input type="text" name="username" placeholder="Enter username" required>
-            <input type="password" name="password" placeholder="Enter password" required>
+            <input type="text" name="username" placeholder="Enter username" maxlength="80" required>
+            <input type="password" name="password" placeholder="Enter password" maxlength="72" required>
             <button type="submit">Login</button>
         </form>
 

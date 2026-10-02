@@ -21,8 +21,8 @@
         {% endwith %}
 
         <form method="POST" action="/register">
-            <input type="text" name="username" placeholder="Choose a username" required>
-            <input type="password" name="password" placeholder="Choose a password" required>
+            <input type="text" name="username" placeholder="Choose a username" maxlength="80" required>
+            <input type="password" name="password" placeholder="Choose a password" minlength="8" maxlength="72" required>
             <button type="submit">Register</button>
         </form>
 
