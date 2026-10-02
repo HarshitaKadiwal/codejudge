@@ -19,17 +19,12 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+       stage('Run Tests') {
     steps {
-        bat 'docker run --rm -v "%CD%:/app" -w /app python:3.11-slim pip install -r requirements.txt'
+        bat 'docker run --rm -v "%CD%:/app" -w /app python:3.11-slim sh -c "pip install -r requirements.txt && pytest -q -p no:cacheprovider"'
     }
 }
 
-stage('Run Tests') {
-    steps {
-        bat 'docker run --rm -v "%CD%:/app" -w /app python:3.11-slim pytest -q -p no:cacheprovider'
-    }
-}
         stage('Build Docker Image') {
             steps {
                 bat 'docker build -t %IMAGE_NAME%:%BUILD_NUMBER% .'
