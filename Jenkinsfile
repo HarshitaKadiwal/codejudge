@@ -6,9 +6,18 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = 'codejudge-app'
-        APP_CONTAINER_NAME = 'codejudge-app'
-        APP_HOST_PORT = '5001'
+        APP_PORT = '5001'
+
+        MYSQL_ROOT_PASSWORD = credentials('codejudge-mysql-root-password')
+        DB_USER = credentials('codejudge-db-user')
+        DB_PASSWORD = credentials('codejudge-db-password')
+        DB_NAME = 'codejudge'
+        DB_PORT = '3306'
+        FLASK_SECRET_KEY = credentials('codejudge-flask-secret')
+
+        // Keep Jenkins deployment separate from your local Compose project
+        COMPOSE_PROJECT_NAME = 'codejudge-jenkins'
+        DB_VOLUME_NAME = 'codejudge-jenkins-db'
     }
 
     stages {
@@ -19,36 +28,26 @@ pipeline {
             }
         }
 
-       stage('Run Tests') {
-    steps {
-        bat 'docker run --rm -v "%CD%:/app" -w /app python:3.11-slim sh -c "pip install -r requirements.txt && pytest -q -p no:cacheprovider"'
-    }
-}
+        stage('Run Tests') {
+            steps {
+                bat '''
+                    docker run --rm -v "%CD%:/app" -w /app python:3.11-slim sh -c "pip install -r requirements.txt && pytest -q -p no:cacheprovider"
+                '''
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t %IMAGE_NAME%:%BUILD_NUMBER% .'
-                bat 'docker tag %IMAGE_NAME%:%BUILD_NUMBER% %IMAGE_NAME%:latest'
+                bat 'docker compose build'
             }
         }
 
         stage('Deploy') {
             steps {
                 bat '''
-                    docker rm --force %APP_CONTAINER_NAME% 2>NUL || exit /B 0
-
-                    docker run --detach ^
-                        --name %APP_CONTAINER_NAME% ^
-                        --restart unless-stopped ^
-                        --publish %APP_HOST_PORT%:5000 ^
-                        --env DB_HOST ^
-                        --env DB_USER ^
-                        --env DB_PASSWORD ^
-                        --env DB_NAME ^
-                        --env DB_PORT ^
-                        --env FLASK_SECRET_KEY ^
-                        --env SESSION_COOKIE_SECURE ^
-                        %IMAGE_NAME%:%BUILD_NUMBER%
+                    docker rm --force codejudge-app 2>NUL
+                    docker compose down --remove-orphans
+                    docker compose up -d
                 '''
             }
         }
@@ -56,18 +55,22 @@ pipeline {
         stage('Health Check') {
             steps {
                 bat '''
+                    echo Waiting for CodeJudge to become healthy...
+
                     for /L %%A in (1,1,12) do (
-                        for /F "delims=" %%H in ('docker inspect --format="{{.State.Health.Status}}" %APP_CONTAINER_NAME% 2^>NUL') do (
-                            if "%%H"=="healthy" (
-                                echo Deployment is healthy on port %APP_HOST_PORT%.
-                                exit /B 0
-                            )
+                        docker compose exec -T web python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health')" >NUL 2>&1
+
+                        if not errorlevel 1 (
+                            echo CodeJudge is healthy on port %APP_PORT%.
+                            exit /B 0
                         )
+
                         timeout /T 5 /NOBREAK >NUL
                     )
 
-                    docker logs %APP_CONTAINER_NAME%
-                    echo Deployment did not become healthy within 60 seconds.
+                    echo CodeJudge health check failed.
+                    docker compose ps
+                    docker compose logs --no-color web
                     exit /B 1
                 '''
             }
@@ -76,11 +79,11 @@ pipeline {
 
     post {
         success {
-            echo 'CodeJudge tests, image build, deployment, and health check succeeded.'
+            echo 'CodeJudge pipeline completed successfully.'
         }
 
         failure {
-            echo 'CodeJudge pipeline failed. Review the failed stage output above.'
+            echo 'CodeJudge pipeline failed. Check the failed stage above.'
         }
     }
 }
