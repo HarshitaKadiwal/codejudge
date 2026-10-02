@@ -20,18 +20,17 @@ pipeline {
         }
 
         stage('Install Dependencies') {
-            steps {
-                bat '"C:\\Users\\Chetan Kadiwal\\python.exe" -m venv .venv'
-                
-                bat '.venv\\Scripts\\python.exe -m pip install -r requirements.txt'
-            }
-        }
+    steps {
+        bat '"C:\\Users\\Chetan Kadiwal\\python.exe" -m venv .venv'
+        bat '.venv\\Scripts\\python.exe -m pip install -r requirements.txt'
+    }
+}
 
-        stage('Run Tests') {
-            steps {
-                bat '.venv\\Scripts\\python.exe -m pytest -q'
-            }
-        }
+stage('Run Tests') {
+    steps {
+        bat '.venv\\Scripts\\python.exe -m pytest -q -p no:cacheprovider'
+    }
+}
 
         stage('Build Docker Image') {
             steps {
