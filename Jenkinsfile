@@ -12,6 +12,7 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -20,7 +21,7 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                bat 'python -m venv .venv'
+                bat '"C:\\Users\\Chetan Kadiwal\\python.exe" -m venv .venv'
                 bat '.venv\\Scripts\\python.exe -m pip install --upgrade pip'
                 bat '.venv\\Scripts\\python.exe -m pip install -r requirements.txt'
             }
@@ -85,6 +86,7 @@ pipeline {
         success {
             echo 'CodeJudge tests, image build, deployment, and health check succeeded.'
         }
+
         failure {
             echo 'CodeJudge pipeline failed. Review the failed stage output above.'
         }
