@@ -21,17 +21,15 @@ pipeline {
 
         stage('Install Dependencies') {
     steps {
-        bat '"C:\\Users\\Chetan Kadiwal\\python.exe" -m venv .venv'
-        bat '.venv\\Scripts\\python.exe -m pip install -r requirements.txt'
+        bat 'docker run --rm -v "%CD%:/app" -w /app python:3.11-slim pip install -r requirements.txt'
     }
 }
 
 stage('Run Tests') {
     steps {
-        bat '.venv\\Scripts\\python.exe -m pytest -q -p no:cacheprovider'
+        bat 'docker run --rm -v "%CD%:/app" -w /app python:3.11-slim pytest -q -p no:cacheprovider'
     }
 }
-
         stage('Build Docker Image') {
             steps {
                 bat 'docker build -t %IMAGE_NAME%:%BUILD_NUMBER% .'
